@@ -5,23 +5,13 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export default async function (req, res) {
+const animalNameSubmit = async function (req, res) {
   const completion = await openai.createCompletion("text-davinci-002", {
-    prompt: generatePrompt(req.body.animal),
-    temperature: 0.6,
+    prompt: "function insertionSort(arr){\n    for(let i = 1; i < arr.length;i++){\n        for(let j = i - 1; j > -1; j--){\n            if(arr[j + 1] < arr[j]){\n                [arr[j+1],arr[j]] = [arr[j],arr[j + 1]];\n            }\n        }\n    };\n  return arr;\n}\ntell me what does this function do?\n1.",
+    temperature: 1,
+    max_tokens: 3000,
   });
   res.status(200).json({ result: completion.data.choices[0].text });
 }
 
-function generatePrompt(animal) {
-  const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
-
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${capitalizedAnimal}
-Names:`;
-}
+export default animalNameSubmit;
